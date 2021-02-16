@@ -31,8 +31,15 @@
     startbutton = document.getElementById('startbutton');
     stopbutton = document.getElementById('stopbutton');
     sendbutton = document.getElementById('sendbutton');
+    indicator = document.getElementById('indicator');
 
-    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: {
+          ideal: 'environment'
+        }
+      }, audio: false
+    })
       .then(function (stream) {
         video.srcObject = stream;
         video.play();
@@ -73,6 +80,7 @@
     }, false);
 
     clearphoto();
+    updateindicator();
   }
 
   // Fill the photo with an indication that none has been
@@ -103,6 +111,7 @@
       var data = canvas.toDataURL('image/png');
       imageURLArray.push(data);
       photo.setAttribute('src', data);
+      updateindicator();
     } else {
       clearphoto();
     }
@@ -122,7 +131,14 @@
   // Send pictures
   function sendpictures() {
     console.log(imageURLArray);
-    alert(imageURLArray.length);
+    alert("No. of images captured: " + imageURLArray.length.toString());
+    imageURLArray.length = 0;
+    updateindicator();
+  }
+
+  // Update indicator
+  function updateindicator() {
+    indicator.innerText = imageURLArray.length;
   }
 
   // Set up our event listener to run the startup process
